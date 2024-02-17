@@ -34,12 +34,13 @@ Motor::Motor(gpio_num_t in_1, gpio_num_t in_2, gpio_num_t en_pin, ledc_channel_t
 /// @brief Sets the speed and direction of the motor
 /// @param speed Speed of the motor (0-100)% duty cycle
 /// @param direction Direction of the motor (True for forward, False for backward)
-void Motor::set_power(int speed, bool direction) {
+void Motor::set_power(int8_t speed) {
     speed>100? speed=100 : speed=speed;
-    speed<0? speed=0 : speed=speed;
-    gpio_set_level(this->in_1, !direction);
-    gpio_set_level(this->in_2, direction);
-
+    speed<-100? speed=-100 : speed=speed;
+    gpio_set_level(this->in_1, speed>0);
+    gpio_set_level(this->in_2, speed<0);
+    
+    speed = abs(speed);
     ledc_set_duty(LEDC_HIGH_SPEED_MODE, this->motor_pwm_channel.channel, map(speed, 0, 100, 0, (1<<this->motor_pwm_timer.duty_resolution)-1));
     ledc_update_duty(LEDC_HIGH_SPEED_MODE, this->motor_pwm_channel.channel);
 }

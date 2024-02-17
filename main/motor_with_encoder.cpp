@@ -48,13 +48,19 @@ void IRAM_ATTR Motor_with_Encoder::calculate_speed_wrapper(TimerHandle_t motor_o
 /// @brief Updates the speed of the motor and resets the encoder count
 void IRAM_ATTR Motor_with_Encoder::calculate_speed(void) {
     this->speed = (this->encoder_count*60000)/this->dt_ms/(this->ratio*this->CPR);
-    this->reset_encoder_count();
+    this->encoder_count = 0;
 }
 
 /// @brief Gets the speed of the motor
+/// @param type Type of speed to get (RPM, RADS)
 /// @return Speed of the motor
-double Motor_with_Encoder::get_speed(void) {
-    return this->speed;
+double Motor_with_Encoder::get_speed(uint8_t type) {
+    if (type == RPM) {
+        return this->speed;
+    } else if (type == RADS) {
+        return this->speed*0.10472;
+    }
+    return 0;
 }
 
 /// @brief Gets the encoder count
