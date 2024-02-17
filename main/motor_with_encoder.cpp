@@ -74,7 +74,7 @@ void Motor_with_Encoder::reset_encoder_count(void) {
     this->encoder_count = 0;
 }
 
-/// @brief Reference the motor with encoder object and calls the privte isr
+/// @brief Reference the motor with encoder object and calls the private isr
 /// @param motor_obj Motor with encoder object reference
 void IRAM_ATTR Motor_with_Encoder::encoder_isr_wrapper(void* motor_obj) {
     Motor_with_Encoder* motor = (Motor_with_Encoder*)motor_obj;

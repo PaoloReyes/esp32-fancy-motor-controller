@@ -14,17 +14,19 @@
 #define CPR 48
 #define DT_MS 25
 
-// Potentiometer parameters
+//ADC parameters
 #define POT_PIN ADC1_CHANNEL_7
 #define ADC_RESOLUTION ADC_WIDTH_BIT_12
 
 extern "C" void app_main(void) {
-    Motor_with_Encoder motor(IN_1, IN_2, EN_PIN, LEDC_CHANNEL_0, LEDC_TIMER_0, ENCODER_A, ENCODER_B, RATIO, CPR, DT_MS); //Create motor with encoder object
+    //Create motor with encoder object
+    Motor_with_Encoder motor(IN_1, IN_2, EN_PIN, LEDC_CHANNEL_0, LEDC_TIMER_0, ENCODER_A, ENCODER_B, RATIO, CPR, DT_MS);
 
     //Configure ADC Channel
     adc1_config_channel_atten(POT_PIN, ADC_ATTEN_DB_11);
     adc1_config_width(ADC_RESOLUTION);
 
+    //Main task loop
     while (1) {
         motor.set_power(map(adc1_get_raw(POT_PIN), 0, (1<<ADC_RESOLUTION)-1, -100, 100)); //Set motor power to potentiometer value in its range (-100, 100)
         printf("Speed: %f rads\n", motor.get_speed(RADS)); //Print motor speed in rad/s

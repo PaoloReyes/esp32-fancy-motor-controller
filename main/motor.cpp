@@ -32,8 +32,7 @@ Motor::Motor(gpio_num_t in_1, gpio_num_t in_2, gpio_num_t en_pin, ledc_channel_t
 
 
 /// @brief Sets the speed and direction of the motor
-/// @param speed Speed of the motor (0-100)% duty cycle
-/// @param direction Direction of the motor (True for forward, False for backward)
+/// @param speed Speed of the motor (-100<-->100)% duty cycle
 void Motor::set_power(int8_t speed) {
     speed>100? speed=100 : speed=speed;
     speed<-100? speed=-100 : speed=speed;
