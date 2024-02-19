@@ -25,7 +25,7 @@ Motor_with_Encoder::Motor_with_Encoder(gpio_num_t in_1, gpio_num_t in_2, gpio_nu
     gpio_install_isr_service(0);
     gpio_isr_handler_add(this->encoder_a, this->encoder_isr_wrapper, (void*)this);
     gpio_isr_handler_add(this->encoder_b, this->encoder_isr_wrapper, (void*)this);
-    this->reset_encoder_count();
+    this->encoder_count = 0;
     this->encoder_state[0] = gpio_get_level(this->encoder_a);
     this->encoder_state[1] = gpio_get_level(this->encoder_b);
 

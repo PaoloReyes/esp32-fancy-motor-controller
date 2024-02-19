@@ -25,6 +25,7 @@ class Motor {
         void set_power(int8_t power);
         uint8_t get_power(void);
         bool get_direction(void);
+        
 
     private:
         gpio_num_t in_1;
