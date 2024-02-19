@@ -30,7 +30,7 @@ extern "C" void app_main(void) {
     //Main task loop
     while (1) {
         motor.set_power(map(adc1_get_raw(POT_PIN), 0, (1<<ADC_RESOLUTION)-1, -100, 100)); //Set motor power to potentiometer value in its range (-100, 100)
-        printf("Power: %d%%\tDirection: %d\tSpeed: %f rpm\n", motor.get_voltage(), motor.get_direction(), motor.get_speed(RPM)); //Print motor speed in rpm
+        printf("Power: %d%%\tDirection: %d\tSpeed: %f rpm\n", motor.get_power(), motor.get_direction(), motor.get_speed(RPM)); //Print motor speed in rpm
         vTaskDelay(pdMS_TO_TICKS(50)); //Delay 50ms
     }
 }

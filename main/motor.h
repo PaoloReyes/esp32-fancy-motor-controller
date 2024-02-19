@@ -8,13 +8,8 @@
 
 typedef enum {
     RPM,
-    RADS
+    RADS,
 } speed_type_t;
-
-typedef enum {
-    CLOCKWISE,
-    COUNTERCLOCKWISE
-} direction_t;
 
 /// @brief Motor class
 class Motor {
@@ -25,12 +20,14 @@ class Motor {
         void set_power(int8_t power);
         uint8_t get_power(void);
         bool get_direction(void);
-        
+        void set_voltage(uint8_t voltage);
+        double get_voltage(void);
 
     private:
         gpio_num_t in_1;
         gpio_num_t in_2;
         gpio_num_t en_pin;
+        uint8_t voltage = 12;
         bool inverted = false;
         int8_t power = 0;
         ledc_channel_config_t motor_pwm_channel;

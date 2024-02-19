@@ -62,6 +62,18 @@ uint8_t Motor::get_power(void) {
     return abs(this->power);
 }
 
+/// @brief Sets the operative voltage of the motor
+/// @param voltage Max voltage of the motor
+void Motor::set_voltage(uint8_t voltage) {
+    this->voltage = voltage;
+}
+
+/// @brief Gets the current voltage of the motor
+/// @return Voltage of the motor
+double Motor::get_voltage(void) {
+    return (double)this->power*this->voltage/100;
+}
+
 /// @brief Gets the current direction of the motor
 /// @return Direction of the motor (true: Counterclockwise, false: Clockwise)
 bool Motor::get_direction(void) {
