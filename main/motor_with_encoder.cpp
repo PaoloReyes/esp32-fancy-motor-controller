@@ -28,6 +28,8 @@ Motor_with_Encoder::Motor_with_Encoder(gpio_num_t in_1, gpio_num_t in_2, gpio_nu
     this->encoder_count = 0;
     this->encoder_state[0] = gpio_get_level(this->encoder_a);
     this->encoder_state[1] = gpio_get_level(this->encoder_b);
+    this->prev_encoder_state[0] = this->encoder_state[0];
+    this->prev_encoder_state[1] = this->encoder_state[1];
 
     //Encoder timer setup
     this->ratio = ratio;

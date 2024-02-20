@@ -12,6 +12,13 @@ Motor::Motor(gpio_num_t in_1, gpio_num_t in_2, gpio_num_t en_pin, ledc_channel_t
     this->in_2 = in_2;
     this->en_pin = en_pin;
 
+    this->motor_pwm_timer.speed_mode = LEDC_HIGH_SPEED_MODE;
+    this->motor_pwm_timer.duty_resolution = LEDC_TIMER_10_BIT;
+    this->motor_pwm_timer.timer_num = motor_pwm_timer;
+    this->motor_pwm_timer.freq_hz = 40000;
+    this->motor_pwm_timer.clk_cfg = LEDC_AUTO_CLK;
+    //this->motor_pwm_timer.deconfigure = false;
+
     this->motor_pwm_channel.gpio_num = en_pin;
     this->motor_pwm_channel.speed_mode = LEDC_HIGH_SPEED_MODE;
     this->motor_pwm_channel.channel = motor_pwm_channel;
@@ -20,17 +27,11 @@ Motor::Motor(gpio_num_t in_1, gpio_num_t in_2, gpio_num_t en_pin, ledc_channel_t
     this->motor_pwm_channel.duty = 0;
     this->motor_pwm_channel.hpoint = 0;
 
-    this->motor_pwm_timer.speed_mode = LEDC_HIGH_SPEED_MODE;
-    this->motor_pwm_timer.duty_resolution = LEDC_TIMER_10_BIT;
-    this->motor_pwm_timer.timer_num = motor_pwm_timer;
-    this->motor_pwm_timer.freq_hz = 40000;
-    this->motor_pwm_timer.clk_cfg = LEDC_AUTO_CLK;
-
     gpio_set_direction(this->in_1, GPIO_MODE_OUTPUT);
     gpio_set_direction(this->in_2, GPIO_MODE_OUTPUT);
     gpio_set_direction(this->en_pin, GPIO_MODE_OUTPUT);
-    ledc_channel_config(&this->motor_pwm_channel);
     ledc_timer_config(&this->motor_pwm_timer);
+    ledc_channel_config(&this->motor_pwm_channel);
 }
 
 /// @brief Sets the motor direction to inverted
