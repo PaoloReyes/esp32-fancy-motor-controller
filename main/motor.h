@@ -17,6 +17,8 @@ class Motor {
         void set_voltage(uint8_t voltage);
         double get_voltage(void);
         bool get_direction(void);
+        void set_open_loop_equation(double m, double b);
+        void set_open_loop_speed(double speed, uint8_t type);
 
     private:
         gpio_num_t in_1;
@@ -25,6 +27,8 @@ class Motor {
         uint8_t voltage = 12;
         bool inverted = false;
         int8_t power = 0;
+        double m = 0.0;
+        double b = 0.0;
         ledc_channel_config_t motor_pwm_channel;
         ledc_timer_config_t motor_pwm_timer;
 };

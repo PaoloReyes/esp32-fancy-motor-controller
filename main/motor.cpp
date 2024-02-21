@@ -80,3 +80,18 @@ double Motor::get_voltage(void) {
 bool Motor::get_direction(void) {
     return this->inverted? this->power>0 : this->power<0;
 }
+
+/// @brief Sets the open loop equation of the motor
+/// @param m Slope of the equation
+/// @param b Y-intercept of the equation
+void Motor::set_open_loop_equation(double m, double b) {
+    this->m = m;
+    this->b = b;
+}
+
+/// @brief Sets the open loop speed of the motor
+/// @param speed Speed of the motor
+/// @param type Type of speed (RPM, RAD_S)
+void Motor::set_open_loop_speed(double speed, uint8_t type) {
+    this->set_power(this->m*speed+this->b);
+}
