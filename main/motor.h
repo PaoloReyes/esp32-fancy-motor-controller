@@ -7,7 +7,6 @@
 #include "driver/ledc.h"
 #include "utils.h"
 
-/// @brief Motor class
 class Motor {
     public:
         Motor(gpio_num_t in_1, gpio_num_t in_2, gpio_num_t en_pin, ledc_channel_t motor_pwm_channel, ledc_timer_t motor_pwm_timer);

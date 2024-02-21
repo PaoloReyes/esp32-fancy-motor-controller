@@ -12,12 +12,18 @@ PID_Controller::PID_Controller(double kp, double ki, double kd, double dt) {
     this->dt = dt;
 }
 
+/// @brief PID controller object to be used in the motor with encoder object
+/// @param kp Proportional gain
+/// @param ki Integral gain
+/// @param kd Derivative gain
 PID_Controller::PID_Controller(double kp, double ki, double kd) {
     this->kp = kp;
     this->ki = ki;
     this->kd = kd;
 }
 
+/// @brief Sets the sampling time of the PID controller
+/// @param dt Sampling time in seconds
 void PID_Controller::set_dt(double dt) {
     this->k1 = this->kp+this->ki*dt+this->kd/dt;
     this->k2 = -this->kp-2*this->kd/dt;
@@ -25,6 +31,8 @@ void PID_Controller::set_dt(double dt) {
     this->dt = dt;
 }
 
+/// @brief Gets the sampling time of the PID controller
+/// @return Sampling time in seconds
 double PID_Controller::get_dt(void) {
     return this->dt;
 }
@@ -71,6 +79,8 @@ void PID_Controller::set_output_limits(double min, double max) {
     this->max = max;
 }
 
+/// @brief Computes the output of the PID controller
+/// @param input Input value
 void PID_Controller::compute(double input) {
     this->error[0] = this->setpoint - input;
     this->output[0] = constrain(this->k1 * this->error[0] + this->k2 * this->error[1] + this->k3 * this->error[2] + this->output[1], this->min, this->max);
@@ -79,6 +89,11 @@ void PID_Controller::compute(double input) {
     this->output[1] = this->output[0];
 }
 
+/// @brief Constrains the value between a minimum and maximum value
+/// @param value Value to be constrained
+/// @param min Lower limit
+/// @param max Upper limit
+/// @return Constrained value
 double PID_Controller::constrain(double value, double min, double max) {
     if (value > max) {
         return max;
