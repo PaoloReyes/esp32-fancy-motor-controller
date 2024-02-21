@@ -1,5 +1,6 @@
 #pragma once
 #include "freertos/FreeRTOS.h"
+#include "pid_controller.h"
 #include "freertos/task.h"
 #include "freertos/timers.h"
 #include "driver/gpio.h"
@@ -38,6 +39,7 @@ class Motor_with_Encoder : public Motor {
     public:
         Motor_with_Encoder(gpio_num_t in_1, gpio_num_t in_2, gpio_num_t en_pin, ledc_channel_t motor_pwm_channel, ledc_timer_t motor_pwm_timer, gpio_num_t encoder_a, gpio_num_t encoder_b, double ratio, double CPR, int dt);
         double get_speed(uint8_t type);
+        void set_pid_controller(PID_Controller* pid_controller);
 
     private:
         gpio_num_t encoder_a;
@@ -45,6 +47,7 @@ class Motor_with_Encoder : public Motor {
         float ratio;
         double CPR;
         int dt_ms;
+        PID_Controller* pid_controller;
 
         int32_t encoder_count = 0;
         bool encoder_state[2];

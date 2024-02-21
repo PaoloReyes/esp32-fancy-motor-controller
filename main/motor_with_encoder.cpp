@@ -66,10 +66,21 @@ void IRAM_ATTR Motor_with_Encoder::calculate_speed_wrapper(TimerHandle_t motor_o
     motor->calculate_speed();
 }
 
+/// @brief Sets the PID controller reference for the motor with encoder
+/// @param pid_controller PID controller reference
+void Motor_with_Encoder::set_pid_controller(PID_Controller* pid_controller) {
+    this->pid_controller = pid_controller;
+}
+
 /// @brief Updates the speed of the motor and resets the encoder count
 void IRAM_ATTR Motor_with_Encoder::calculate_speed(void) {
     this->speed = (this->encoder_count*60000)/this->dt_ms/(this->ratio*this->CPR);
     this->encoder_count = 0;
+    if (this->pid_controller != NULL) {
+        if (this->pid_controller->get_dt() != this->dt_ms/1000.0) this->pid_controller->set_dt(this->dt_ms/1000.0);
+        this->pid_controller->compute(this->speed);
+        this->set_power(-this->pid_controller->get_output());
+    }
 }
 
 /// @brief Reference the motor with encoder object and calls the private isr

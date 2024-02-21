@@ -1,0 +1,31 @@
+#pragma once
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+
+class PID_Controller {
+    public:
+        PID_Controller(double Kp, double Ki, double Kd);
+        PID_Controller(double Kp, double Ki, double Kd, double dt);
+        void set_dt(double dt);
+        double get_dt(void);
+        void set_setpoint(double setpoint);
+        double get_setpoint(void);
+        void set_input(double input);
+        double get_input(void);
+        double get_output(void);
+        void set_limits(double min, double max);
+        void set_output_limits(double min, double max);
+        void compute(double input);
+
+    private:
+        double kp, ki, kd;
+        double k1, k2, k3;
+        double dt;
+        double setpoint = 0;
+        double error[3] = {0, 0, 0};
+        double output[2] = {0, 0};
+        double min = -100;
+        double max = 100;
+
+        double constrain(double value, double min, double max);
+};
