@@ -14,17 +14,21 @@
 #define CPR 48
 #define DT_MS 25
 
+#define KP 3
+#define KI 10
+#define KD 0.0025
+
 extern "C" void app_main(void) {
     //Creates motor with encoder object
     Motor_with_Encoder motor(IN_1, IN_2, EN_PIN, LEDC_CHANNEL_0, LEDC_TIMER_0, ENCODER_A, ENCODER_B, RATIO, CPR, DT_MS);
-    PID_Controller* pid_controller = new PID_Controller(3, 10, 0.0025); //Creates PID controller object
+    PID_Controller* pid_controller = new PID_Controller(KP, KI, KD); //Creates PID controller object
     motor.set_pid_controller(pid_controller); //Sets PID controller reference to motor with encoder object
     //motor.set_inverted();
 
     //Main task loop
-    pid_controller->set_setpoint(200); //Sets PID controller setpoint
+    pid_controller->set_setpoint(200, RPM); //Sets PID controller setpoint
     while (1) {
-        printf("Setpoint: %f\t Speed: %f\n", pid_controller->get_setpoint(), motor.get_speed(RPM)); //Prints speed
+        printf("Setpoint: %f\t Speed: %f\n", pid_controller->get_setpoint(), motor.get_speed()); //Prints speed
         vTaskDelay(pdMS_TO_TICKS(50)); //Delay 50ms
     }
 }

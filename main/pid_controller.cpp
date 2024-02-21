@@ -31,20 +31,36 @@ double PID_Controller::get_dt(void) {
 
 /// @brief Sets the setpoint of the PID controller
 /// @param setpoint Setpoint value
-void PID_Controller::set_setpoint(double setpoint) {
-    this->setpoint = setpoint;
+void PID_Controller::set_setpoint(double setpoint, uint8_t type) {
+    this->type = type;
+    if (this->type == RPM) {
+        this->setpoint = setpoint;
+    } else if (this->type == RADS) {
+        this->setpoint = setpoint*9.5492965;
+    }
 }
 
 /// @brief Gets the setpoint of the PID controller
 /// @return Setpoint value
 double PID_Controller::get_setpoint(void) {
-    return this->setpoint;
+    if (this->type == RPM) {
+        return this->setpoint;
+    } else if (this->type == RADS) {
+        return this->setpoint/9.5492965;
+    }
+    return 0;
 }
 
 /// @brief Gets the output of the PID controller
 /// @return Output value
 double PID_Controller::get_output(void) {
     return this->output[0];
+}
+
+/// @brief Gets the type of units of the PID controller
+/// @return Type of the PID controller
+bool PID_Controller::get_type(void) {
+    return this->type;
 }
 
 /// @brief Changes the limits of the PID controller

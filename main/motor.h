@@ -7,11 +7,6 @@
 #include "driver/ledc.h"
 #include "utils.h"
 
-typedef enum {
-    RPM,
-    RADS,
-} speed_type_t;
-
 /// @brief Motor class
 class Motor {
     public:
@@ -20,9 +15,9 @@ class Motor {
         bool get_inverted(void);
         void set_power(int8_t power);
         uint8_t get_power(void);
-        bool get_direction(void);
         void set_voltage(uint8_t voltage);
         double get_voltage(void);
+        bool get_direction(void);
 
     private:
         gpio_num_t in_1;
@@ -39,6 +34,7 @@ class Motor_with_Encoder : public Motor {
     public:
         Motor_with_Encoder(gpio_num_t in_1, gpio_num_t in_2, gpio_num_t en_pin, ledc_channel_t motor_pwm_channel, ledc_timer_t motor_pwm_timer, gpio_num_t encoder_a, gpio_num_t encoder_b, double ratio, double CPR, int dt);
         double get_speed(uint8_t type);
+        double get_speed(void);
         void set_pid_controller(PID_Controller* pid_controller);
 
     private:

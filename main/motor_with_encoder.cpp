@@ -53,17 +53,18 @@ double Motor_with_Encoder::get_speed(uint8_t type) {
     return 0;
 }
 
-/// @brief Translates the encoder state to a string
-/// @param arr Encoder state array
-uint8_t Motor_with_Encoder::boolean_encoder_2_uint8_t(bool* arr) {
-    return (arr[0] ? 2 : 0) + (arr[1] ? 1 : 0);
-}
-
-/// @brief Reference the motor with encoder object and calls the privte calculate_speed methods
-/// @param motor_obj Motor with encoder object reference
-void IRAM_ATTR Motor_with_Encoder::calculate_speed_wrapper(TimerHandle_t motor_obj) {
-    Motor_with_Encoder* motor = (Motor_with_Encoder*)pvTimerGetTimerID(motor_obj);
-    motor->calculate_speed();
+/// @brief Gets the speed of the motor
+/// @return Speed of the motor
+double Motor_with_Encoder::get_speed(void) {
+    Motor::get_inverted()? this->speed=-this->speed : this->speed=this->speed;
+    if (this->pid_controller != NULL) {
+        if (this->pid_controller->get_type() == RPM) {
+            return this->speed;
+        } else if (this->pid_controller->get_type() == RADS) {
+            return this->speed*0.10472;
+        }
+    }
+    return this->speed;
 }
 
 /// @brief Sets the PID controller reference for the motor with encoder
@@ -83,11 +84,11 @@ void IRAM_ATTR Motor_with_Encoder::calculate_speed(void) {
     }
 }
 
-/// @brief Reference the motor with encoder object and calls the private isr
+/// @brief Reference the motor with encoder object and calls the privte calculate_speed methods
 /// @param motor_obj Motor with encoder object reference
-void IRAM_ATTR Motor_with_Encoder::encoder_isr_wrapper(void* motor_obj) {
-    Motor_with_Encoder* motor = (Motor_with_Encoder*)motor_obj;
-    motor->encoder_isr();
+void IRAM_ATTR Motor_with_Encoder::calculate_speed_wrapper(TimerHandle_t motor_obj) {
+    Motor_with_Encoder* motor = (Motor_with_Encoder*)pvTimerGetTimerID(motor_obj);
+    motor->calculate_speed();
 }
 
 /// @brief ISR for the encoder
@@ -129,4 +130,17 @@ void IRAM_ATTR Motor_with_Encoder::encoder_isr(void) {
     }
     this->prev_encoder_state[0] = this->encoder_state[0];
     this->prev_encoder_state[1] = this->encoder_state[1];
+}
+
+/// @brief Reference the motor with encoder object and calls the private isr
+/// @param motor_obj Motor with encoder object reference
+void IRAM_ATTR Motor_with_Encoder::encoder_isr_wrapper(void* motor_obj) {
+    Motor_with_Encoder* motor = (Motor_with_Encoder*)motor_obj;
+    motor->encoder_isr();
+}
+
+/// @brief Translates the encoder state to a string
+/// @param arr Encoder state array
+uint8_t Motor_with_Encoder::boolean_encoder_2_uint8_t(bool* arr) {
+    return (arr[0] ? 2 : 0) + (arr[1] ? 1 : 0);
 }
