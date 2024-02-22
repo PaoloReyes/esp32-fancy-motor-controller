@@ -57,7 +57,7 @@ double Motor_with_Encoder::get_speed(uint8_t type) {
 /// @return Speed of the motor
 double Motor_with_Encoder::get_speed(void) {
     Motor::get_inverted()? this->speed=-this->speed : this->speed=this->speed;
-    if (this->pid_controller != NULL) {
+    if (this->pid_enabled) {
         if (this->pid_controller->get_type() == RPM) {
             return this->speed;
         } else if (this->pid_controller->get_type() == RADS) {
@@ -71,13 +71,14 @@ double Motor_with_Encoder::get_speed(void) {
 /// @param pid_controller PID controller reference
 void Motor_with_Encoder::set_pid_controller(PID_Controller* pid_controller) {
     this->pid_controller = pid_controller;
+    this->pid_enabled = true;
 }
 
 /// @brief Updates the speed of the motor and resets the encoder count
 void IRAM_ATTR Motor_with_Encoder::calculate_speed(void) {
     this->speed = (this->encoder_count*60000)/this->dt_ms/(this->ratio*this->CPR);
     this->encoder_count = 0;
-    if (this->pid_controller != NULL) {
+    if (this->pid_enabled) {
         if (this->pid_controller->get_dt() != this->dt_ms/1000.0) this->pid_controller->set_dt(this->dt_ms/1000.0);
         this->pid_controller->compute(this->speed);
         this->set_power(-this->pid_controller->get_output());

@@ -17,12 +17,12 @@
 extern "C" void app_main(void) {
     //Creates motor with encoder object
     Motor_with_Encoder motor(IN_1, IN_2, EN_PIN, LEDC_CHANNEL_0, LEDC_TIMER_0, ENCODER_A, ENCODER_B, RATIO, CPR, DT_MS);
-    motor.set_open_loop_equation(0.0, 0.0); //Sets open loop equation (y=mx+b
+    motor.set_open_loop_equation(-0.36120745442986935, 4.3087400593523455); //Sets open loop equation (y=mx+b)
     //motor.set_inverted();
 
     //Main task loop
     while (1) {
-        motor.set_open_loop_speed(100, RPM);
+        motor.set_open_loop_speed(200, RPM);
         printf("Speed: %f\n", motor.get_speed()); //Prints speed
         vTaskDelay(pdMS_TO_TICKS(50)); //Delay 50ms
     }

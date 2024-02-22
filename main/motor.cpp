@@ -93,5 +93,11 @@ void Motor::set_open_loop_equation(double m, double b) {
 /// @param speed Speed of the motor
 /// @param type Type of speed (RPM, RAD_S)
 void Motor::set_open_loop_speed(double speed, uint8_t type) {
-    this->set_power(this->m*speed+this->b);
+    double b = 0;
+    speed>0 ? b = -this->b : b = this->b;
+    if (type==RPM) {
+        this->set_power(this->m*speed+b);
+    } else if (type==RADS) {
+        this->set_power(this->m*(speed*RPM2RADS)+b);
+    }
 }

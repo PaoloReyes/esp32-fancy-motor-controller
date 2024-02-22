@@ -1,11 +1,7 @@
 #pragma once
+#include "constants.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-
-typedef enum {
-    RPM,
-    RADS,
-} speed_type_t;
 
 class PID_Controller {
     public:

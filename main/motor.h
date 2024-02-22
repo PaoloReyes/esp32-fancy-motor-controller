@@ -47,6 +47,7 @@ class Motor_with_Encoder : public Motor {
         double CPR;
         int dt_ms;
         PID_Controller* pid_controller;
+        bool pid_enabled = false;
 
         int32_t encoder_count = 0;
         bool encoder_state[2];

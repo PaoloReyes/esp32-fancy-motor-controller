@@ -44,7 +44,7 @@ void PID_Controller::set_setpoint(double setpoint, uint8_t type) {
     if (this->type == RPM) {
         this->setpoint = setpoint;
     } else if (this->type == RADS) {
-        this->setpoint = setpoint*9.5492965;
+        this->setpoint = setpoint*RPM2RADS;
     }
 }
 
@@ -54,7 +54,7 @@ double PID_Controller::get_setpoint(void) {
     if (this->type == RPM) {
         return this->setpoint;
     } else if (this->type == RADS) {
-        return this->setpoint/9.5492965;
+        return this->setpoint*RADS2RPM;
     }
     return 0;
 }
