@@ -26,6 +26,7 @@ Motor_with_Encoder::Motor_with_Encoder(gpio_num_t in_1, gpio_num_t in_2, gpio_nu
     gpio_isr_handler_add(this->encoder_a, this->encoder_isr_wrapper, (void*)this);
     gpio_isr_handler_add(this->encoder_b, this->encoder_isr_wrapper, (void*)this);
     this->encoder_count = 0;
+    this->prev_encoder_count = 0;
     this->encoder_state[0] = gpio_get_level(this->encoder_a);
     this->encoder_state[1] = gpio_get_level(this->encoder_b);
     this->prev_encoder_state[0] = this->encoder_state[0];
@@ -45,18 +46,6 @@ Motor_with_Encoder::Motor_with_Encoder(gpio_num_t in_1, gpio_num_t in_2, gpio_nu
 /// @return Speed of the motor
 double Motor_with_Encoder::get_speed(uint8_t type) {
     Motor::get_inverted()? this->speed=-this->speed : this->speed=this->speed;
-    if (type == RPM) {
-        return this->speed;
-    } else if (type == RADS) {
-        return this->speed*0.10472;
-    }
-    return 0;
-}
-
-/// @brief Gets the speed of the motor
-/// @return Speed of the motor
-double Motor_with_Encoder::get_speed(void) {
-    Motor::get_inverted()? this->speed=-this->speed : this->speed=this->speed;
     if (this->pid_enabled) {
         if (this->pid_controller->get_type() == RPM) {
             return this->speed;
@@ -64,23 +53,33 @@ double Motor_with_Encoder::get_speed(void) {
             return this->speed*0.10472;
         }
     }
-    return this->speed;
+    return speed;
+}
+
+/// @brief Gets the position of the motor
+/// @return Position of the motor
+int64_t Motor_with_Encoder::get_position(void) {
+    return this->encoder_count;
 }
 
 /// @brief Sets the PID controller reference for the motor with encoder
 /// @param pid_controller PID controller reference
 void Motor_with_Encoder::set_pid_controller(PID_Controller* pid_controller) {
     this->pid_controller = pid_controller;
+    this->pid_controller->set_dt(this->dt_ms/1000.0);
     this->pid_enabled = true;
 }
 
 /// @brief Updates the speed of the motor and resets the encoder count
 void IRAM_ATTR Motor_with_Encoder::calculate_speed(void) {
-    this->speed = (this->encoder_count*60000)/this->dt_ms/(this->ratio*this->CPR);
-    this->encoder_count = 0;
+    this->speed = ((this->encoder_count-this->prev_encoder_count)*60000)/this->dt_ms/(this->ratio*this->CPR);
+    this->prev_encoder_count = this->encoder_count;
     if (this->pid_enabled) {
-        if (this->pid_controller->get_dt() != this->dt_ms/1000.0) this->pid_controller->set_dt(this->dt_ms/1000.0);
-        this->pid_controller->compute(this->speed);
+        if (this->pid_controller->get_mode() == SPEED) {
+            this->pid_controller->compute(this->speed);
+        } else if (this->pid_controller->get_mode() == POSITION) {
+            this->pid_controller->compute(this->encoder_count);
+        }
         this->set_power(-this->pid_controller->get_output());
     }
 }

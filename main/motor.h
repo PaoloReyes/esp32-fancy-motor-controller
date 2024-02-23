@@ -37,7 +37,7 @@ class Motor_with_Encoder : public Motor {
     public:
         Motor_with_Encoder(gpio_num_t in_1, gpio_num_t in_2, gpio_num_t en_pin, ledc_channel_t motor_pwm_channel, ledc_timer_t motor_pwm_timer, gpio_num_t encoder_a, gpio_num_t encoder_b, double ratio, double CPR, int dt);
         double get_speed(uint8_t type);
-        double get_speed(void);
+        int64_t get_position(void);
         void set_pid_controller(PID_Controller* pid_controller);
 
     private:
@@ -46,13 +46,14 @@ class Motor_with_Encoder : public Motor {
         float ratio;
         double CPR;
         int dt_ms;
-        PID_Controller* pid_controller;
-        bool pid_enabled = false;
 
-        int32_t encoder_count = 0;
+        int64_t encoder_count = 0;
+        int64_t prev_encoder_count = 0;
         bool encoder_state[2];
         bool prev_encoder_state[2];
         double speed;
+        bool pid_enabled = false;
+        PID_Controller* pid_controller;
 
         void calculate_speed(void);
         static void calculate_speed_wrapper(TimerHandle_t motor_obj);

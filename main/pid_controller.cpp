@@ -16,10 +16,11 @@ PID_Controller::PID_Controller(double kp, double ki, double kd, double dt) {
 /// @param kp Proportional gain
 /// @param ki Integral gain
 /// @param kd Derivative gain
-PID_Controller::PID_Controller(double kp, double ki, double kd) {
+PID_Controller::PID_Controller(double kp, double ki, double kd, mode_type_t mode) {
     this->kp = kp;
     this->ki = ki;
     this->kd = kd;
+    this->mode = mode;
 }
 
 /// @brief Sets the sampling time of the PID controller
@@ -37,7 +38,7 @@ double PID_Controller::get_dt(void) {
     return this->dt;
 }
 
-/// @brief Sets the setpoint of the PID controller
+/// @brief Sets the speed of the PID controller
 /// @param setpoint Setpoint value
 void PID_Controller::set_setpoint(double setpoint, uint8_t type) {
     this->type = type;
@@ -46,6 +47,12 @@ void PID_Controller::set_setpoint(double setpoint, uint8_t type) {
     } else if (this->type == RADS) {
         this->setpoint = setpoint*RPM2RADS;
     }
+}
+
+/// @brief Sets the position of the PID controller
+/// @param setpoint Setpoint value
+void PID_Controller::set_setpoint(double setpoint) {
+    this->setpoint = setpoint;
 }
 
 /// @brief Gets the setpoint of the PID controller
@@ -87,6 +94,12 @@ void PID_Controller::compute(double input) {
     this->error[2] = this->error[1];
     this->error[1] = this->error[0];
     this->output[1] = this->output[0];
+}
+
+/// @brief Gets the mode of the PID controller
+/// @return PID mode
+uint8_t PID_Controller::get_mode(void) {
+    return this->mode;
 }
 
 /// @brief Constrains the value between a minimum and maximum value

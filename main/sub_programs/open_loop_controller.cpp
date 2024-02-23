@@ -34,7 +34,7 @@ extern "C" void app_main(void) {
     //Main task loop
     while (1) {
         motor.set_open_loop_speed(speed, RPM); //Sets speed
-        printf("Speed: %f\n", motor.get_speed()); //Prints speed
+        printf("Power: %d\tSpeed: %f\n", motor.get_power(), motor.get_speed()); //Prints speed
         vTaskDelay(pdMS_TO_TICKS(50)); //Delay 50ms
     }
 }

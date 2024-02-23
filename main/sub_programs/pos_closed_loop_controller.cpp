@@ -27,7 +27,7 @@
 //PID POSITION controller parameters
 #define KP_POS 0.1
 #define KI_POS 0.2
-#define KD_POS 0.015
+#define KD_POS 0.01
 
 void serial_read_task(void* speed);
 
